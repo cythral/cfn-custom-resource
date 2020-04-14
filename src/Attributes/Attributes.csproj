@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProjectName>Cythral.CloudFormation.CustomResource.Attributes</ProjectName>
+    <AssemblyName>$(ProjectName)</AssemblyName>
+    <PackageId>$(ProjectName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Attributes" Version="0.8.7-alpha-g5319745d59" />
+  </ItemGroup>
+
+</Project>

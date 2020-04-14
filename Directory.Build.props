@@ -1,0 +1,25 @@
+<Project>
+    <PropertyGroup>
+        <CythralCodeGenerationRoslynVersion>0.8.7-alpha-g5319745d59</CythralCodeGenerationRoslynVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>$(MSBuildThisFileDirectory)bin/$(MSBuildProjectName)/$(Configuration)</OutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)bin/Packages/$(Configuration)</PackageOutputPath>
+        <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget</RestorePackagesPath>
+        <RestoreAdditionalProjectSources>@(CustomLocalFeed);$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
+        <AssemblyName>$(ProjectName)</AssemblyName>
+        <PackageId>$(ProjectName)</PackageId>
+
+        <_ReleaseFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Release/</_ReleaseFeedLocation>
+        <_DebugFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Debug/</_DebugFeedLocation>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CustomLocalFeed Include="$(_ReleaseFeedLocation)" Condition="Exists($(_ReleaseFeedLocation))" />
+        <CustomLocalFeed Include="$(_DebugFeedLocation)" Condition="Exists($(_DebugFeedLocation))" />
+    </ItemGroup>
+
+    
+</Project>
