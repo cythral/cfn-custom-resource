@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <!-- <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.104.20" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="RichardSzalay.MockHttp" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Attributes/Attributes.csproj" />
+    <ProjectReference Include="../../src/Generator/Generator.csproj" IncludeAssets="all" OutputItemType="CodeGenerationRoslynPlugin" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool"
+                      Version="0.8.7-alpha-g5319745d59"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="CodeGeneratorToolPathItem"
+                      SkipGetTargetFrameworkProperties="true"
+                      UndefineProperties="TargetFramework" />
+  </ItemGroup>
+
+  <Import Project="../../src/Generator/Generator.targets" />
+</Project>

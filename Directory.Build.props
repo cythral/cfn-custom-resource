@@ -21,5 +21,10 @@
         <CustomLocalFeed Include="$(_DebugFeedLocation)" Condition="Exists($(_DebugFeedLocation))" />
     </ItemGroup>
 
-    
+    <ItemGroup>
+        <GeneratorBuildPropertyNames Include="OutDir" />
+        <GeneratorBuildPropertyNames Include="TargetFrameworkVersion" />
+        <GeneratorBuildPropertyNames Include="StackDescription" />
+        <GeneratorBuildPropertyNames Include="AssemblyName" />
+    </ItemGroup>
 </Project>

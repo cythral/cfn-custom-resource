@@ -102,7 +102,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             get
             {
-                return String.Format("public Cythral.CloudFormation.CustomResource.Request<{0}> Request {{ get; set; }}", ResourcePropertiesTypeName);
+                return String.Format("public Cythral.CloudFormation.CustomResource.Generator.Request<{0}> Request {{ get; set; }}", ResourcePropertiesTypeName);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             get
             {
-                return String.Format("public static Cythral.CloudFormation.CustomResource.IHttpClientProvider HttpClientProvider = new DefaultHttpClientProvider();");
+                return String.Format("public static Cythral.CloudFormation.CustomResource.Generator.IHttpClientProvider HttpClientProvider = new DefaultHttpClientProvider();");
             }
         }
 
@@ -139,7 +139,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                         get {{
                             var options = new System.Text.Json.JsonSerializerOptions();
                             options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-                            options.Converters.Add(new Cythral.CloudFormation.CustomResource.AwsConstantClassConverterFactory());
+                            options.Converters.Add(new Cythral.CloudFormation.CustomResource.Generator.AwsConstantClassConverterFactory());
                             return options;
                         }}
                     }}
@@ -209,7 +209,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             }
         }
 
-        public static void OnComplete(TransformationContext context)
+        public static void OnComplete(OnCompleteContext context)
         {
             var outputDirectory = context.BuildProperties["OutDir"];
             var description = context.BuildProperties["StackDescription"];
@@ -253,7 +253,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 Properties = new
                 {
                     FunctionName = ClassName,
-                    Handler = $"{context.Compilation.Assembly.Name}::{context.ProcessingNode.GetFullName()}::Handle",
+                    Handler = $"{context.BuildProperties["AssemblyName"]}::{context.ProcessingNode.GetFullName()}::Handle",
                     Role = new GetAttTag() { Name = $"{ClassName}Role", Attribute = "Arn" },
                     Code = $"publish",
                     Runtime = $"dotnetcore{version}",
@@ -452,8 +452,8 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             yield return ParseStatement("Console.WriteLine(e.Message + \"\n\" + e.StackTrace);");
             yield return ParseStatement("stream.Seek(0, System.IO.SeekOrigin.Begin);");
-            yield return ParseStatement("var request = await System.Text.Json.JsonSerializer.DeserializeAsync<Cythral.CloudFormation.CustomResource.Request<object>>(stream, SerializerOptions);");
-            yield return ParseStatement("response.Status = Cythral.CloudFormation.CustomResource.ResponseStatus.FAILED;");
+            yield return ParseStatement("var request = await System.Text.Json.JsonSerializer.DeserializeAsync<Cythral.CloudFormation.CustomResource.Generator.Request<object>>(stream, SerializerOptions);");
+            yield return ParseStatement("response.Status = Cythral.CloudFormation.CustomResource.Generator.ResponseStatus.FAILED;");
             yield return ParseStatement("response.Reason = e.Message;");
             yield return ParseStatement("response.PhysicalResourceId = resource.PhysicalResourceId;");
             yield return ParseStatement("await Respond(request, response, client);");

@@ -5,7 +5,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <PackDependsOn>$(PackDependsOn);ResolveProjectReferences</PackDependsOn>
     <ProjectName>Cythral.CloudFormation.CustomResource</ProjectName>
     <AssemblyName>$(ProjectName)</AssemblyName>
     <PackageId>$(ProjectName)</PackageId>
