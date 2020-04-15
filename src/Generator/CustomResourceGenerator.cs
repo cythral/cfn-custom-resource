@@ -24,7 +24,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
     using Yaml;
 
 
-    public class Generator : ICodeGenerator
+    public class CustomResourceGenerator : ICodeGenerator
     {
 
         private INamedTypeSymbol ResourcePropertiesType;
@@ -151,7 +151,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         public static Dictionary<string, Output> Outputs = new Dictionary<string, Output>();
 
-        public Generator(AttributeData attributeData)
+        public CustomResourceGenerator(AttributeData attributeData)
         {
             Requires.NotNull(attributeData, nameof(attributeData));
             Data = attributeData;
