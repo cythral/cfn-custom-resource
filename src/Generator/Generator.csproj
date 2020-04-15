@@ -6,6 +6,9 @@
     <ProjectName>Cythral.CloudFormation.CustomResource.Generator</ProjectName>
     <AssemblyName>$(ProjectName)</AssemblyName>
     <PackageId>$(ProjectName)</PackageId>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <ItemGroup>
