@@ -162,7 +162,10 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 switch (arg.Key)
                 {
                     case "Grantees":
-                        Grantees = (from typeConstant in arg.Value.Values select typeConstant.Value).ToArray();
+                        Grantees = (
+                            from typedConstant in arg.Value.Values
+                            select typedConstant.Value
+                        ).ToArray();
                         break;
 
                     case "GranteeType":
