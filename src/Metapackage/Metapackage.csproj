@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Cythral.CodeGeneration.Roslyn.PluginMetapackage.Sdk" Version="0.8.7-alpha-g5319745d59"/>
+  <Sdk Name="Cythral.CodeGeneration.Roslyn.PluginMetapackage.Sdk" Version="0.8.8-alpha-g5e3d795f84"/>
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>

@@ -9,8 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using Amazon.Runtime;
-
 using Cythral.CodeGeneration.Roslyn;
 
 
@@ -45,19 +43,23 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
 
                 var assembly = LoadAssemblyForType(type);
+                Permissions.Add("got assembly: " + assembly.GetName());
                 var configClassName = GetConfigClassName(type);
-                var metadataType = assembly.GetType(configClassName);
-                var metadata = (ClientConfig)Activator.CreateInstance(metadataType);
+                Permissions.Add("got config class name: " + configClassName);
+                var metadataType = assembly.GetType(configClassName, true);
+                Permissions.Add("got metadataType: " + metadataType);
+                var metadata = (IClientConfig)Activator.CreateInstance(metadataType);
                 var iamPrefix = metadata.AuthenticationServiceName;
-                var apiCallName = GetApiCallName(node);
-                var permission = iamPrefix + ":" + apiCallName;
+                // var apiCallName = GetApiCallName(node);
+                // var permission = iamPrefix + ":" + apiCallName;
 
-                if (permission == "lambda:Invoke") permission = "lambda:InvokeFunction";
+                // if (permission == "lambda:Invoke") permission = "lambda:InvokeFunction";
 
-                Permissions.Add(permission);
+                // Permissions.Add(permission);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Permissions.Add(e.Message);
                 foreach (var child in node.ChildNodes())
                 {
                     Visit(child);

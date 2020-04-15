@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Attributes" Version="0.8.7-alpha-g5319745d59" />
+    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Attributes" Version="0.8.8-alpha-g5e3d795f84" />
   </ItemGroup>
 
 </Project>
