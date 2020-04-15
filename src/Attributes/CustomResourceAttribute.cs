@@ -4,7 +4,7 @@ using Cythral.CodeGeneration.Roslyn;
 
 namespace Cythral.CloudFormation.CustomResource.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
     [CodeGenerationAttribute("Cythral.CloudFormation.CustomResource.Generator.CustomResourceGenerator, Cythral.CloudFormation.CustomResource.Generator")]
     public class CustomResourceAttribute : Attribute
     {
