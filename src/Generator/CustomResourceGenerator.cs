@@ -102,7 +102,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             get
             {
-                return String.Format("public Cythral.CloudFormation.CustomResource.Generator.Request<{0}> Request {{ get; set; }}", ResourcePropertiesTypeName);
+                return String.Format("public Cythral.CloudFormation.CustomResource.Core.Request<{0}> Request {{ get; set; }}", ResourcePropertiesTypeName);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             get
             {
-                return String.Format("public static Cythral.CloudFormation.CustomResource.Generator.IHttpClientProvider HttpClientProvider = new DefaultHttpClientProvider();");
+                return String.Format("public static Cythral.CloudFormation.CustomResource.Core.IHttpClientProvider HttpClientProvider = new DefaultHttpClientProvider();");
             }
         }
 
@@ -139,7 +139,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                         get {{
                             var options = new System.Text.Json.JsonSerializerOptions();
                             options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-                            options.Converters.Add(new Cythral.CloudFormation.CustomResource.Generator.AwsConstantClassConverterFactory());
+                            options.Converters.Add(new Cythral.CloudFormation.CustomResource.Core.AwsConstantClassConverterFactory());
                             return options;
                         }}
                     }}
@@ -455,8 +455,8 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             yield return ParseStatement("Console.WriteLine(e.Message + \"\n\" + e.StackTrace);");
             yield return ParseStatement("stream.Seek(0, System.IO.SeekOrigin.Begin);");
-            yield return ParseStatement("var request = await System.Text.Json.JsonSerializer.DeserializeAsync<Cythral.CloudFormation.CustomResource.Generator.Request<object>>(stream, SerializerOptions);");
-            yield return ParseStatement("response.Status = Cythral.CloudFormation.CustomResource.Generator.ResponseStatus.FAILED;");
+            yield return ParseStatement("var request = await System.Text.Json.JsonSerializer.DeserializeAsync<Cythral.CloudFormation.CustomResource.Core.Request<object>>(stream, SerializerOptions);");
+            yield return ParseStatement("response.Status = Cythral.CloudFormation.CustomResource.Core.ResponseStatus.FAILED;");
             yield return ParseStatement("response.Reason = e.Message;");
             yield return ParseStatement("response.PhysicalResourceId = resource.PhysicalResourceId;");
             yield return ParseStatement("await Respond(request, response, client);");

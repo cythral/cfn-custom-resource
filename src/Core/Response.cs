@@ -1,4 +1,4 @@
-namespace Cythral.CloudFormation.CustomResource.Generator
+namespace Cythral.CloudFormation.CustomResource.Core
 {
 
     public class Response

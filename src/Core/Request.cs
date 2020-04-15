@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 using Cythral.CloudFormation.CustomResource.Attributes;
 
-namespace Cythral.CloudFormation.CustomResource.Generator
+namespace Cythral.CloudFormation.CustomResource.Core
 {
 
     public class Request<T>

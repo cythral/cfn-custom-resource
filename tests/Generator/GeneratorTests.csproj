@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Attributes/Attributes.csproj" />
+    <ProjectReference Include="../../src/Core/Core.csproj" />
     <ProjectReference Include="../../src/Generator/Generator.csproj" IncludeAssets="all" OutputItemType="CodeGenerationRoslynPlugin" />
   </ItemGroup>
 

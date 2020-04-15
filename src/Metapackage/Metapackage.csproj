@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Attributes/Attributes.csproj" />
+    <ProjectReference Include="../Core/Core.csproj" />
     <NupkgAdditionalDependency Include="Cythral.CloudFormation.CustomResource.Generator" IncludeAssets="all" />
   </ItemGroup>
 </Project>

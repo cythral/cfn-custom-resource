@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-using Cythral.CloudFormation.CustomResource.Generator;
+using Cythral.CloudFormation.CustomResource.Core;
 using Cythral.CloudFormation.CustomResource.Attributes;
 
 using NUnit.Framework;

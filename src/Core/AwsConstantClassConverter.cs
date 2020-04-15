@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 using Amazon.Runtime;
 
-namespace Cythral.CloudFormation.CustomResource.Generator
+namespace Cythral.CloudFormation.CustomResource.Core
 {
     public class AwsConstantClassConverter<T> : JsonConverter<T> where T : ConstantClass
     {
