@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Cythral.CodeGeneration.Roslyn.Plugin.Sdk" Version="0.8.8-alpha-g5e3d795f84" />
+  <Sdk Name="Cythral.CodeGeneration.Roslyn.Plugin.Sdk" Version="0.8.12-alpha-g888d1d7801" />
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -12,8 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CodeGenerationRoslynPackagePropFiles Include="Generator.props" />
-    <CodeGenerationRoslynPackageTargetFiles Include="Generator.targets" />
+    <None Include="Generator.props" Pack="true" PackagePath="build" KeepDuplicates="false" />
+    <None Include="Generator.targets" Pack="true" PackagePath="build" KeepDuplicates="false" />
+    <PackageBuildFolderProjectImport Include="@(None->'%(Filename)%(Extension)')"/>
   </ItemGroup>
 
   <ItemGroup>

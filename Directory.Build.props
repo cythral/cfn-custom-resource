@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <CythralCodeGenerationRoslynVersion>0.8.7-alpha-g5319745d59</CythralCodeGenerationRoslynVersion>
+        <CythralCodeGenerationRoslynVersion>0.8.12-alpha-g888d1d7801</CythralCodeGenerationRoslynVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -20,9 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <GeneratorBuildPropertyNames Include="OutDir" />
-        <GeneratorBuildPropertyNames Include="TargetFrameworkVersion" />
-        <GeneratorBuildPropertyNames Include="StackDescription" />
-        <GeneratorBuildPropertyNames Include="AssemblyName" />
+        <PluginRequestedProperty Include="OutDir" />
+        <PluginRequestedProperty Include="TargetFrameworkVersion" />
+        <PluginRequestedProperty Include="StackDescription" />
+        <PluginRequestedProperty Include="AssemblyName" />
     </ItemGroup>
 </Project>

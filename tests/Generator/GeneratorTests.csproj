@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsTestProject>true</IsTestProject>
-    <!-- <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <CodeGenerationRoslynRequestedProperty Include="@(PluginRequestedProperty)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../src/Attributes/Attributes.csproj" />
     <ProjectReference Include="../../src/Core/Core.csproj" />
     <ProjectReference Include="../../src/Generator/Generator.csproj" IncludeAssets="all" OutputItemType="CodeGenerationRoslynPlugin" />
@@ -21,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool"
-                      Version="0.8.8-alpha-g5e3d795f84"
+                      Version="0.8.12-alpha-g888d1d7801"
                       ReferenceOutputAssembly="false"
                       OutputItemType="CodeGeneratorToolPathItem"
                       SkipGetTargetFrameworkProperties="true"

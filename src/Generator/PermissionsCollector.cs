@@ -45,7 +45,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 }
 
 
-                (var loader, var assembly) = LoadAssemblyForType(type);
+                var (loader, assembly) = LoadAssemblyForType(type);
                 var configClassName = GetConfigClassName(type);
 
                 using (loader.EnterContextualReflection())
