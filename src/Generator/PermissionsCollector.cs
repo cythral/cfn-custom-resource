@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using Amazon.Runtime;
+
+using McMaster.NETCore.Plugins;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -42,24 +45,25 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 }
 
 
-                var assembly = LoadAssemblyForType(type);
-                Permissions.Add("got assembly: " + assembly.GetName());
+                (var loader, var assembly) = LoadAssemblyForType(type);
                 var configClassName = GetConfigClassName(type);
-                Permissions.Add("got config class name: " + configClassName);
-                var metadataType = assembly.GetType(configClassName, true);
-                Permissions.Add("got metadataType: " + metadataType);
-                var metadata = (IClientConfig)Activator.CreateInstance(metadataType);
-                var iamPrefix = metadata.AuthenticationServiceName;
-                // var apiCallName = GetApiCallName(node);
-                // var permission = iamPrefix + ":" + apiCallName;
 
-                // if (permission == "lambda:Invoke") permission = "lambda:InvokeFunction";
+                using (loader.EnterContextualReflection())
+                {
+                    var metadataType = assembly.GetType(configClassName, true);
+                    var metadata = (ClientConfig)Activator.CreateInstance(metadataType);
+                    var iamPrefix = metadata.AuthenticationServiceName;
+                    var apiCallName = GetApiCallName(node);
+                    var permission = iamPrefix + ":" + apiCallName;
 
-                // Permissions.Add(permission);
+                    if (permission == "lambda:Invoke") permission = "lambda:InvokeFunction";
+                    Permissions.Add(permission);
+                }
+
             }
             catch (Exception e)
             {
-                Permissions.Add(e.Message);
+                Permissions.Add(nameof(e) + " " + e.Message + " " + e.StackTrace);
                 foreach (var child in node.ChildNodes())
                 {
                     Visit(child);
@@ -111,14 +115,15 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         }
 
         // gets the assembly for an amazon api call
-        private Assembly LoadAssemblyForType(ITypeSymbol type)
+        private (PluginLoader, Assembly) LoadAssemblyForType(ITypeSymbol type)
         {
             var assemblyReferences = from reference in context.Compilation.ExternalReferences
                                      where Path.GetFileNameWithoutExtension(reference.Display) == type.ContainingAssembly.Name
                                      select reference.Display;
 
             var referenceLocation = assemblyReferences.First();
-            return Assembly.LoadFrom(referenceLocation);
+            PluginLoader loader = PluginLoader.CreateFromAssemblyFile(referenceLocation, sharedTypes: new Type[] { typeof(ClientConfig) });
+            return (loader, loader.LoadDefaultAssembly());
         }
 
         private string GetConfigClassName(ITypeSymbol type)
