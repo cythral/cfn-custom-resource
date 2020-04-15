@@ -11,6 +11,7 @@
         <RestoreAdditionalProjectSources>@(CustomLocalFeed);$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
         <_ReleaseFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Release/</_ReleaseFeedLocation>
         <_DebugFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Debug/</_DebugFeedLocation>
