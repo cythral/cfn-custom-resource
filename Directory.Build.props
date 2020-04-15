@@ -9,8 +9,8 @@
         <PackageOutputPath>$(MSBuildThisFileDirectory)bin/Packages/$(Configuration)</PackageOutputPath>
         <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget</RestorePackagesPath>
         <RestoreAdditionalProjectSources>@(CustomLocalFeed);$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
-        <AssemblyName>$(ProjectName)</AssemblyName>
-        <PackageId>$(ProjectName)</PackageId>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
         <_ReleaseFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Release/</_ReleaseFeedLocation>
         <_DebugFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Debug/</_DebugFeedLocation>
