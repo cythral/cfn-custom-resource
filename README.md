@@ -146,4 +146,4 @@ Cythral would like to thank Andrew Aarnott (@aarnott), Amadeusz Sadowski (@amis9
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE.txt).
