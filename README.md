@@ -14,6 +14,7 @@ Easily create custom resources for AWS in C# using Cythral.CloudFormation.Custom
    1. [Custom Resource Development](#custom-resource-development)
    2. [Template Customization](#template-customization)
    3. [Template Packaging and Deployment](#template-packaging-and-deployment)
+3. [Acknowledgements](#acknowledgements)
 
 ## Installation
 
