@@ -15,6 +15,7 @@ Easily create custom resources for AWS in C# using Cythral.CloudFormation.Custom
    2. [Template Customization](#template-customization)
    3. [Template Packaging and Deployment](#template-packaging-and-deployment)
 3. [Acknowledgements](#acknowledgements)
+4. [License](#license)
 
 ## Installation
 
@@ -142,3 +143,7 @@ dotnet publish -p:Package=false -p:Deploy=false
 ## Acknowledgements
 
 Cythral would like to thank Andrew Aarnott (@aarnott), Amadeusz Sadowski (@amis92), Manuel Pfemeter (@manne) and the rest of the contributors of [CodeGeneration.Roslyn](https://github.com/aarnott/codegeneration.roslyn) for their excellent work on that project, which in large part makes this one possible.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
