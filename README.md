@@ -48,7 +48,8 @@ using Cythral.CloudFormation.CustomResource.Core;
 namespace Example
 {
     [CustomResource(
-        // Required. Sets the type to deserialize ResourceProperties to
+        // Optional. Sets the type to deserialize ResourceProperties to.
+        // If not set, this will default to the 'Properties' subclass
         ResourcePropertiesType = typeof(ExampleCustomResource.Properties),
         // Required if Grantees is set. Sets the grantee type to use
         // Possible values are Import or Literal
