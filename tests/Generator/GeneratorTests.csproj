@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.104.20" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
@@ -23,12 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool"
-                      Version="0.8.12-alpha-g888d1d7801"
-                      ReferenceOutputAssembly="false"
-                      OutputItemType="CodeGeneratorToolPathItem"
-                      SkipGetTargetFrameworkProperties="true"
-                      UndefineProperties="TargetFramework" />
+    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool" Version="0.8.12-alpha-g888d1d7801" ReferenceOutputAssembly="false" OutputItemType="CodeGeneratorToolPathItem" SkipGetTargetFrameworkProperties="true" UndefineProperties="TargetFramework" />
   </ItemGroup>
 
   <Import Project="../../src/Generator/Generator.targets" />
