@@ -27,9 +27,9 @@ namespace Cythral.CloudFormation.CustomResource.Generator
     public class CustomResourceGenerator : ICodeGenerator
     {
 
-        private INamedTypeSymbol ResourcePropertiesType = null;
+        private INamedTypeSymbol ResourcePropertiesType;
 
-        private string ResourcePropertiesTypeName = null;
+        private string ResourcePropertiesTypeName;
 
         private object[] Grantees { get; set; }
 
