@@ -173,7 +173,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                         break;
 
                     case "ResourcePropertiesType":
-                        ResourcePropertiesTypeName = arg.Value.Value.ToString();
+                        ResourcePropertiesTypeName = arg.Value.Value?.ToString();
                         ResourcePropertiesType = (INamedTypeSymbol)arg.Value.Value;
                         break;
                 }
@@ -182,8 +182,20 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
         {
-            var result = GeneratePartialClass();
             OriginalClass = (ClassDeclarationSyntax)context.ProcessingNode;
+            if (ResourcePropertiesType == null)
+            {
+                ResourcePropertiesType = (
+                    from child in OriginalClass.ChildNodes()
+                    where child is ClassDeclarationSyntax childClass
+                        && childClass.Identifier.ValueText == "Properties"
+                    select context.SemanticModel.GetDeclaredSymbol(child) as INamedTypeSymbol
+                ).First();
+
+                ResourcePropertiesTypeName = ResourcePropertiesType.ToString();
+            }
+
+            var result = GeneratePartialClass();
             AddResources(context);
 
             return Task.FromResult(SyntaxFactory.List(result));
