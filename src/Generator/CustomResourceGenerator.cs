@@ -324,6 +324,11 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
             Resources.Add($"{ClassName}Role", role);
 
+            Outputs.Add(ClassName + "RoleArn", new Output(
+                value: new GetAttTag { Name = $"{ClassName}Role", Attribute = "Arn" },
+                name: new SubTag { Expression = $"${{AWS::StackName}}:{ClassName}RoleArn" }
+            ));
+
             var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.txt";
             File.WriteAllText(permissionsFilePath, string.Join('\n', permissions));
         }
