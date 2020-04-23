@@ -22,14 +22,14 @@ Easily create custom resources for AWS in C# using Cythral.CloudFormation.Custom
 Install using the dotnet CLI:
 
 ```shell
-dotnet add package Cythral.CloudFormation.CustomResource --version 0.2.14-alpha
+dotnet add package Cythral.CloudFormation.CustomResource --version 0.2.19-alpha
 ```
 
 Or add directly to your project file:
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="Cythral.CloudFormation.CustomResource" Version="0.2.14-alpha" />
+    <PackageReference Include="Cythral.CloudFormation.CustomResource" Version="0.2.19-alpha" />
 </ItemGroup>
 ```
 
