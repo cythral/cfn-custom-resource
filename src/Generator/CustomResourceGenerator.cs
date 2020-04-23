@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -226,14 +227,15 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         public static void OnComplete(OnCompleteContext context)
         {
-            var outputDirectory = context.BuildProperties["OutDir"];
+            var outputDirectory = context.BuildProperties["OutDir"].TrimEnd('/');
             var description = context.BuildProperties["StackDescription"];
-            var filePath = outputDirectory + "/" + context.BuildProperties["AssemblyName"] + ".template.yml";
+            var templateFilePath = outputDirectory + "/" + context.BuildProperties["AssemblyName"] + ".template.yml";
+            var permissionsFilePath = outputDirectory + "/permissions.yml";
+            var errorFilePath = outputDirectory + "/customResourceTemplatingError.txt";
 
             try
             {
-                var yamlDotNet = Assembly.Load("YamlDotNet");
-                var serializer = ((SerializerBuilder)yamlDotNet.CreateInstance("YamlDotNet.Serialization.SerializerBuilder"))
+                var serializer = new SerializerBuilder()
                 .WithTagMapping("!GetAtt", typeof(GetAttTag))
                 .WithTagMapping("!Sub", typeof(SubTag))
                 .WithTypeConverter(new GetAttTagConverter())
@@ -241,18 +243,16 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 .WithTypeConverter(new ImportValueTagConverter())
                 .Build();
 
-                var yaml = serializer.Serialize(new
+                File.WriteAllText(templateFilePath, serializer.Serialize(new
                 {
                     Description = description,
                     Resources = Resources,
                     Outputs = Outputs
-                });
-
-                System.IO.File.WriteAllText(filePath, yaml);
+                }));
             }
             catch (Exception e)
             {
-                System.IO.File.WriteAllText(filePath, e.Message);
+                System.IO.File.WriteAllText(errorFilePath, e.Message);
             }
         }
 
@@ -260,6 +260,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             AddRoleResource(context);
 
+            var codeDirectory = context.BuildProperties["OutDir"].TrimEnd('/') + "/publish";
             var version = context.BuildProperties["TargetFrameworkVersion"].Replace("v", "");
 
             Resources.Add(ClassName + "Lambda", new Resource
@@ -267,16 +268,15 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 Type = "AWS::Lambda::Function",
                 Properties = new
                 {
-                    FunctionName = ClassName,
                     Handler = $"{context.BuildProperties["AssemblyName"]}::{context.ProcessingNode.GetFullName()}::Handle",
                     Role = new GetAttTag() { Name = $"{ClassName}Role", Attribute = "Arn" },
-                    Code = $"publish",
+                    Code = codeDirectory,
                     Runtime = $"dotnetcore{version}",
                     Timeout = 300,
                 }
             });
 
-            if (Grantees != null && Grantees?.Count() > 0)
+            if (Grantees != null && Grantees!.Count() > 0)
             {
                 for (int i = 0; i < Grantees.Count(); i++)
                 {
@@ -318,10 +318,15 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             var policy = new Policy($"{ClassName}PrimaryPolicy");
             var permissions = new HashSet<string> { "sts:AssumeRole" };
             permissions.UnionWith(collector.Permissions);
+
             policy.AddStatement(Action: permissions);
             role.AddPolicy(policy);
 
             Resources.Add($"{ClassName}Role", role);
+
+            var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.yml";
+            var serializer = new SerializerBuilder().Build();
+            File.WriteAllText(permissionsFilePath, serializer.Serialize(permissions));
         }
 
         private MemberDeclarationSyntax GenerateHandleMethod()
