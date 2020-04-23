@@ -324,9 +324,8 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
             Resources.Add($"{ClassName}Role", role);
 
-            var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.yml";
-            var serializer = new SerializerBuilder().Build();
-            File.WriteAllText(permissionsFilePath, serializer.Serialize(permissions));
+            var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.txt";
+            File.WriteAllText(permissionsFilePath, string.Join('\n', permissions));
         }
 
         private MemberDeclarationSyntax GenerateHandleMethod()
