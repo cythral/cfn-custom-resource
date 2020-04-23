@@ -1,5 +1,7 @@
 # Cythral.CloudFormation.CustomResource
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/cythral/cfn-custom-resource/Continuous%20Integration?style=flat-square) ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Cythral.CloudFormation.CustomResource?color=blue&style=flat-square)
+
 Easily create custom resources for AWS in C# using Cythral.CloudFormation.CustomResource, that are:
 
 - **CI Friendly** - no need to workaround CLIs that deploy things for you. We generate a CloudFormation template, you can choose how you want to package and deploy it. (We provide msbuild tasks for this too.)
@@ -22,14 +24,14 @@ Easily create custom resources for AWS in C# using Cythral.CloudFormation.Custom
 Install using the dotnet CLI:
 
 ```shell
-dotnet add package Cythral.CloudFormation.CustomResource --version 0.2.19-alpha
+dotnet add package Cythral.CloudFormation.CustomResource --version 0.2.22-alpha-gae48b9755e
 ```
 
 Or add directly to your project file:
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="Cythral.CloudFormation.CustomResource" Version="0.2.19-alpha" />
+    <PackageReference Include="Cythral.CloudFormation.CustomResource" Version="0.2.22-alpha-gae48b9755e" />
 </ItemGroup>
 ```
 
