@@ -67,5 +67,7 @@ jobs:
         run: |
           sed "s/\$PACKAGE_VERSION/$(dotnet nbgv get-version -v NuGetPackageVersion)/g" .github/templates/README.md > README.md
           git add README.md
+          git config user.name "Github Actions[bot]"
+          git config user.email "<41898282+github-actions[bot]@users.noreply.github.com>"
           git commit -m "Update README [skip ci]"
           git push origin master
