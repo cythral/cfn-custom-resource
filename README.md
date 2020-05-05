@@ -14,8 +14,9 @@ Easily create custom resources for AWS in C# using Cythral.CloudFormation.Custom
    1. [Custom Resource Development](#custom-resource-development)
    2. [Template Customization](#template-customization)
    3. [Template Packaging and Deployment](#template-packaging-and-deployment)
-3. [Acknowledgements](#acknowledgements)
-4. [License](#license)
+3. [Examples](#examples)
+4. [Acknowledgements](#acknowledgements)
+5. [License](#license)
 
 ## Installation
 
@@ -140,6 +141,10 @@ If you want to simply run the publish target without packaging or deploying, run
 ```shell
 dotnet publish -p:Package=false -p:Deploy=false
 ```
+
+## Examples
+
+- [cfn-certificate-resource](https://github.com/cythral/cfn-certificate-resource) - DNS-Validated ACM SSL Certificate
 
 ## Acknowledgements
 
