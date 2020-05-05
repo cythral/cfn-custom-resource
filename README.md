@@ -141,6 +141,10 @@ If you want to simply run the publish target without packaging or deploying, run
 dotnet publish -p:Package=false -p:Deploy=false
 ```
 
+## Examples
+
+- [cfn-certificate-resource](https://github.com/cythral/cfn-certificate-resource) - DNS-Validated ACM SSL Certificate
+
 ## Acknowledgements
 
 Cythral would like to thank Andrew Aarnott (@aarnott), Amadeusz Sadowski (@amis92), Manuel Pfemeter (@manne) and the rest of the contributors of [CodeGeneration.Roslyn](https://github.com/aarnott/codegeneration.roslyn) for their excellent work on that project, which in large part makes this one possible.
