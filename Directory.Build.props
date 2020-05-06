@@ -9,7 +9,7 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         
-        <CythralCodeGenerationRoslynVersion>0.8.15-alpha-g06808178cf</CythralCodeGenerationRoslynVersion>
+        <CythralCodeGenerationRoslynVersion>0.8.17-alpha-g40a87e6792</CythralCodeGenerationRoslynVersion>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Collections.Immutable;
 using System;
 using System.IO;
@@ -26,7 +27,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
     using Yaml;
 
-
     public class CustomResourceGenerator : ICodeGenerator
     {
 
@@ -42,7 +42,12 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         private string ClassName;
 
+        private string FullClassName;
+
         private AttributeData Data;
+
+        public static CustomResourceGenerator instance;
+
 
         private string ConstructorDefinition
         {
@@ -183,6 +188,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         {
             OriginalClass = (ClassDeclarationSyntax)context.ProcessingNode;
             ClassName = OriginalClass.Identifier.ValueText;
+            FullClassName = OriginalClass.GetFullName();
 
             if (ResourcePropertiesType == null)
             {
@@ -225,6 +231,8 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         public void OnComplete(OnCompleteContext context)
         {
+
+
             var outputDirectory = context.BuildProperties["OutDir"].TrimEnd('/');
             var description = context.BuildProperties["StackDescription"];
             var templateFilePath = outputDirectory + "/" + context.BuildProperties["AssemblyName"] + ".template.yml";
@@ -241,7 +249,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 .WithTypeConverter(new SubTagConverter())
                 .WithTypeConverter(new ImportValueTagConverter())
                 .Build();
-
 
                 File.WriteAllText(templateFilePath, serializer.Serialize(new
                 {
@@ -269,7 +276,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 Type = "AWS::Lambda::Function",
                 Properties = new
                 {
-                    Handler = $"{context.BuildProperties["AssemblyName"]}::${ClassName}::Handle",
+                    Handler = $"{context.BuildProperties["AssemblyName"]}::{FullClassName}::Handle",
                     Role = new GetAttTag() { Name = $"{ClassName}Role", Attribute = "Arn" },
                     Code = codeDirectory,
                     Runtime = $"dotnetcore{version}",
