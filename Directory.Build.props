@@ -17,14 +17,16 @@
         <PackageOutputPath>$(MSBuildThisFileDirectory)bin/Packages/$(Configuration)</PackageOutputPath>
         <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget</RestorePackagesPath>
         <RestoreAdditionalProjectSources>@(CustomLocalFeed);$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
-
+        
         <_ReleaseFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Release/</_ReleaseFeedLocation>
         <_DebugFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Debug/</_DebugFeedLocation>
+        <_CGRLocalLocation>/Users/tfisher/Documents/codegeneration.roslyn/bin/Packages/Debug</_CGRLocalLocation>
     </PropertyGroup>
 
     <ItemGroup>
         <CustomLocalFeed Include="$(_ReleaseFeedLocation)" Condition="Exists($(_ReleaseFeedLocation))" />
         <CustomLocalFeed Include="$(_DebugFeedLocation)" Condition="Exists($(_DebugFeedLocation))" />
+        <CustomLocalFeed Include="$(_CGRLocalLocation)" Condition="Exists($(_CGRLocalLocation))" />
     </ItemGroup>
     
     <ItemGroup>

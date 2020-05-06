@@ -20,13 +20,13 @@ namespace Cythral.CloudFormation.CustomResource.Generator
     public class PermissionsCollector : CSharpSyntaxWalker
     {
 
-        private TransformationContext context;
+        private CSharpCompilation compilation;
 
         public HashSet<string> Permissions { get; private set; } = new HashSet<string>();
 
-        public PermissionsCollector(TransformationContext context)
+        public PermissionsCollector(CSharpCompilation compilation)
         {
-            this.context = context;
+            this.compilation = compilation;
         }
 
         public override void VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -47,7 +47,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
                 var (loader, assembly) = LoadAssemblyForType(type);
 
-
                 using (loader.EnterContextualReflection())
                 {
                     var iamPrefix = GetClientConfig(type, assembly).AuthenticationServiceName;
@@ -59,13 +58,11 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Permissions.Add(nameof(e) + " " + e.Message + " " + e.StackTrace);
                 foreach (var child in node.ChildNodes())
                 {
                     Visit(child);
-                    return;
                 }
             }
         }
@@ -90,17 +87,10 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         private ITypeSymbol GetCallingMemberType(InvocationExpressionSyntax node)
         {
-            try
-            {
-
-                var symbol = context.SemanticModel.GetTypeInfo(node).Type as INamedTypeSymbol;
-                return symbol.TypeArguments[0];
-
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var semanticModel = compilation.GetSemanticModel(node.SyntaxTree);
+            var info = semanticModel.GetTypeInfo(node);
+            var symbol = info.ConvertedType as INamedTypeSymbol;
+            return symbol.TypeArguments.Count() > 0 ? symbol.TypeArguments[0] : null;
         }
 
         private string GetApiCallName(InvocationExpressionSyntax node)
@@ -133,7 +123,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         // gets the assembly for an amazon api call
         private (PluginLoader, Assembly) LoadAssemblyForType(ITypeSymbol type)
         {
-            var assemblyReferences = from reference in context.Compilation.ExternalReferences
+            var assemblyReferences = from reference in compilation.ExternalReferences
                                      where Path.GetFileNameWithoutExtension(reference.Display) == type.ContainingAssembly.Name
                                      select reference.Display;
 
