@@ -1,3 +1,5 @@
+using System.Runtime.Serialization;
+using System.Collections.Immutable;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -5,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Text.Json.JsonSerializer;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,7 +27,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
     using Yaml;
 
-
     public class CustomResourceGenerator : ICodeGenerator
     {
 
@@ -38,9 +40,14 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
         private ClassDeclarationSyntax OriginalClass;
 
-        private string ClassName => OriginalClass.Identifier.ValueText;
+        private string ClassName;
+
+        private string FullClassName;
 
         private AttributeData Data;
+
+        public static CustomResourceGenerator instance;
+
 
         private string ConstructorDefinition
         {
@@ -148,10 +155,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             }
         }
 
-        public static Dictionary<string, Resource> Resources = new Dictionary<string, Resource>();
-
-        public static Dictionary<string, Output> Outputs = new Dictionary<string, Output>();
-
         public CustomResourceGenerator(AttributeData attributeData)
         {
             Requires.NotNull(attributeData, nameof(attributeData));
@@ -184,6 +187,9 @@ namespace Cythral.CloudFormation.CustomResource.Generator
         public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
         {
             OriginalClass = (ClassDeclarationSyntax)context.ProcessingNode;
+            ClassName = OriginalClass.Identifier.ValueText;
+            FullClassName = OriginalClass.GetFullName();
+
             if (ResourcePropertiesType == null)
             {
                 ResourcePropertiesType = (
@@ -197,8 +203,6 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             }
 
             var result = GeneratePartialClass();
-            AddResources(context);
-
             return Task.FromResult(SyntaxFactory.List(result));
 
             IEnumerable<MemberDeclarationSyntax> GeneratePartialClass()
@@ -225,13 +229,16 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             }
         }
 
-        public static void OnComplete(OnCompleteContext context)
+        public void OnComplete(OnCompleteContext context)
         {
+
+
             var outputDirectory = context.BuildProperties["OutDir"].TrimEnd('/');
             var description = context.BuildProperties["StackDescription"];
             var templateFilePath = outputDirectory + "/" + context.BuildProperties["AssemblyName"] + ".template.yml";
             var permissionsFilePath = outputDirectory + "/permissions.yml";
             var errorFilePath = outputDirectory + "/customResourceTemplatingError.txt";
+            var diagnosticsFilePath = outputDirectory + "/customResourceDiagnostics.txt";
 
             try
             {
@@ -246,29 +253,30 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 File.WriteAllText(templateFilePath, serializer.Serialize(new
                 {
                     Description = description,
-                    Resources = Resources,
-                    Outputs = Outputs
+                    Resources = GetResources(context),
+                    Outputs = GetOutputs(context)
                 }));
             }
             catch (Exception e)
             {
-                System.IO.File.WriteAllText(errorFilePath, e.Message);
+                System.IO.File.WriteAllText(errorFilePath, e.Message + " " + e.StackTrace);
             }
         }
 
-        private void AddResources(TransformationContext context)
+        private Dictionary<string, Resource> GetResources(OnCompleteContext context)
         {
-            AddRoleResource(context);
+            var resources = new Dictionary<string, Resource>();
+            resources.Add($"{ClassName}Role", GetRoleResource(context));
 
             var codeDirectory = context.BuildProperties["OutDir"].TrimEnd('/') + "/publish";
             var version = context.BuildProperties["TargetFrameworkVersion"].Replace("v", "");
 
-            Resources.Add(ClassName + "Lambda", new Resource
+            resources.Add(ClassName + "Lambda", new Resource
             {
                 Type = "AWS::Lambda::Function",
                 Properties = new
                 {
-                    Handler = $"{context.BuildProperties["AssemblyName"]}::{context.ProcessingNode.GetFullName()}::Handle",
+                    Handler = $"{context.BuildProperties["AssemblyName"]}::{FullClassName}::Handle",
                     Role = new GetAttTag() { Name = $"{ClassName}Role", Attribute = "Arn" },
                     Code = codeDirectory,
                     Runtime = $"dotnetcore{version}",
@@ -282,7 +290,7 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 {
                     var grantee = Grantees[i];
 
-                    Resources.Add($"{ClassName}Permission{i}", new Resource
+                    resources.Add($"{ClassName}Permission{i}", new Resource
                     {
                         Type = "AWS::Lambda::Permission",
                         Properties = new
@@ -295,25 +303,27 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                 }
             }
 
-            Outputs.Add(ClassName + "LambdaArn", new Output(
-                value: new GetAttTag { Name = $"{ClassName}Lambda", Attribute = "Arn" },
-                name: new SubTag { Expression = $"${{AWS::StackName}}:{ClassName}LambdaArn" }
-            ));
+            return resources;
         }
 
-        private void AddRoleResource(TransformationContext context)
+        private Resource GetRoleResource(OnCompleteContext context)
         {
+
             var role = new Role()
             .AddTrustedServiceEntity("lambda.amazonaws.com")
             .AddManagedPolicy("arn:aws:iam::aws:policy/AWSLambdaExecute");
 
-            var collector = new PermissionsCollector(context);
+            var collector = new PermissionsCollector(context.Compilation);
 
-            try
+            foreach (var tree in context.Compilation.SyntaxTrees)
             {
-                collector.Visit(context.ProcessingNode);
+                try
+                {
+                    collector.Visit(tree.GetRoot());
+                }
+                catch (Exception) { }
             }
-            catch (Exception) { }
+
 
             var policy = new Policy($"{ClassName}PrimaryPolicy");
             var permissions = new HashSet<string> { "sts:AssumeRole" };
@@ -322,15 +332,26 @@ namespace Cythral.CloudFormation.CustomResource.Generator
             policy.AddStatement(Action: permissions);
             role.AddPolicy(policy);
 
-            Resources.Add($"{ClassName}Role", role);
+            var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.txt";
+            File.WriteAllText(permissionsFilePath, string.Join('\n', permissions));
+            return role;
+        }
 
-            Outputs.Add(ClassName + "RoleArn", new Output(
+        private Dictionary<string, Output> GetOutputs(OnCompleteContext context)
+        {
+            var outputs = new Dictionary<string, Output>();
+
+            outputs.Add(ClassName + "LambdaArn", new Output(
+                value: new GetAttTag { Name = $"{ClassName}Lambda", Attribute = "Arn" },
+                name: new SubTag { Expression = $"${{AWS::StackName}}:{ClassName}LambdaArn" }
+            ));
+
+            outputs.Add(ClassName + "RoleArn", new Output(
                 value: new GetAttTag { Name = $"{ClassName}Role", Attribute = "Arn" },
                 name: new SubTag { Expression = $"${{AWS::StackName}}:{ClassName}RoleArn" }
             ));
 
-            var permissionsFilePath = $"{context.BuildProperties["OutDir"]}/{ClassName}.permissions.txt";
-            File.WriteAllText(permissionsFilePath, string.Join('\n', permissions));
+            return outputs;
         }
 
         private MemberDeclarationSyntax GenerateHandleMethod()
