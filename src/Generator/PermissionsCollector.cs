@@ -46,13 +46,11 @@ namespace Cythral.CloudFormation.CustomResource.Generator
 
 
                 var (loader, assembly) = LoadAssemblyForType(type);
-                var configClassName = GetConfigClassName(type);
+
 
                 using (loader.EnterContextualReflection())
                 {
-                    var metadataType = assembly.GetType(configClassName, true);
-                    var metadata = (ClientConfig)Activator.CreateInstance(metadataType);
-                    var iamPrefix = metadata.AuthenticationServiceName;
+                    var iamPrefix = GetClientConfig(type, assembly).AuthenticationServiceName;
                     var apiCallName = GetApiCallName(node);
                     var permission = iamPrefix + ":" + apiCallName;
 
@@ -70,6 +68,24 @@ namespace Cythral.CloudFormation.CustomResource.Generator
                     return;
                 }
             }
+        }
+
+        private IClientConfig GetClientConfig(ITypeSymbol type, Assembly assembly)
+        {
+            try
+            {
+                var configClassName = GetConfigClassName(type);
+                var metadataType = assembly.GetType(configClassName, true);
+
+                if (metadataType != null)
+                {
+                    return (ClientConfig)Activator.CreateInstance(metadataType);
+                }
+            }
+            catch (Exception) { }
+
+            var configType = assembly.GetTypes().Where(t => typeof(ClientConfig).IsAssignableFrom(t)).FirstOrDefault();
+            return configType != null ? (ClientConfig)Activator.CreateInstance(configType) : null;
         }
 
         private ITypeSymbol GetCallingMemberType(InvocationExpressionSyntax node)
