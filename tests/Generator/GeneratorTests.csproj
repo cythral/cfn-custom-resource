@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool" Version="0.8.15-alpha-g06808178cf" ReferenceOutputAssembly="false" OutputItemType="CodeGeneratorToolPathItem" SkipGetTargetFrameworkProperties="true" UndefineProperties="TargetFramework" />
+    <PackageReference Include="Cythral.CodeGeneration.Roslyn.Tool" Version="$(CythralCodeGenerationRoslynVersion)" ReferenceOutputAssembly="false" OutputItemType="CodeGeneratorToolPathItem" SkipGetTargetFrameworkProperties="true" UndefineProperties="TargetFramework" />
   </ItemGroup>
 
   <Import Project="../../src/Generator/Generator.targets" />

@@ -8,7 +8,8 @@
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-        <CythralCodeGenerationRoslynVersion>0.8.12-alpha-g888d1d7801</CythralCodeGenerationRoslynVersion>
+        
+        <CythralCodeGenerationRoslynVersion>0.8.15-alpha-g06808178cf</CythralCodeGenerationRoslynVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -20,13 +21,11 @@
         
         <_ReleaseFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Release/</_ReleaseFeedLocation>
         <_DebugFeedLocation>$(MSBuildThisFileDirectory)bin/Packages/Debug/</_DebugFeedLocation>
-        <_CGRLocalLocation>/Users/tfisher/Documents/codegeneration.roslyn/bin/Packages/Debug</_CGRLocalLocation>
     </PropertyGroup>
 
     <ItemGroup>
         <CustomLocalFeed Include="$(_ReleaseFeedLocation)" Condition="Exists($(_ReleaseFeedLocation))" />
         <CustomLocalFeed Include="$(_DebugFeedLocation)" Condition="Exists($(_DebugFeedLocation))" />
-        <CustomLocalFeed Include="$(_CGRLocalLocation)" Condition="Exists($(_CGRLocalLocation))" />
     </ItemGroup>
     
     <ItemGroup>
