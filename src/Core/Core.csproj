@@ -4,7 +4,15 @@
     <ProjectName>Cythral.CloudFormation.CustomResource.Core</ProjectName>
     <AssemblyName>$(ProjectName)</AssemblyName>
     <PackageId>$(ProjectName)</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
